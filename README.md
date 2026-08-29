@@ -1,4 +1,4 @@
-# GlanceX - Privacy-First Local Excel Phone Directory Search
+# GlanceX - Privacy-First directory search engine for Local Excel/CSV sheets
 
 👉 **Live Site**: **[https://2004anoushkajoshi.github.io/excel-lookup-data-search/](https://2004anoushkajoshi.github.io/excel-lookup-data-search/)**
 
