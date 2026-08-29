@@ -1,4 +1,6 @@
-# OmniParse - Privacy-First Local Excel Phone Directory Search
+# GlanceX - Privacy-First Local Excel Phone Directory Search
+
+👉 **Live Site**: **[https://2004anoushkajoshi.github.io/excel-lookup-data-search/](https://2004anoushkajoshi.github.io/excel-lookup-data-search/)**
 
 A sleek, 100% client-side web application to look up contact information inside large Excel or CSV directory files. 
 

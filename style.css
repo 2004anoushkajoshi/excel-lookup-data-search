@@ -148,6 +148,13 @@ header {
     border-color: rgba(255, 255, 255, 0.2);
 }
 
+.network-monitor-btn.active {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: var(--primary);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+}
+
 /* Privacy Shield Modal/Panel */
 .privacy-monitor-panel {
     display: none;

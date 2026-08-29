@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle Privacy Monitor Panel
     monitorBtn.addEventListener('click', () => {
         privacyPanel.classList.toggle('active');
+        monitorBtn.classList.toggle('active');
     });
 
     initializePrivacyShield();
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             worker.terminate();
         }
         
-        worker = new Worker('worker.js');
+        worker = new Worker('worker.js?v=' + Date.now());
         logPrivacyEvent('Web Worker thread spawned for background file parsing.', 'SYSTEM');
 
         worker.onmessage = function (e) {

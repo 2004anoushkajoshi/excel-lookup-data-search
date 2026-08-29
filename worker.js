@@ -172,7 +172,40 @@ self.onmessage = function (e) {
                         // Use header name or a default fallback if header is empty
                         const key = header || `Column ${index + 1}`;
                         // Safeguard in case row is shorter than headers
-                        record[key] = (row[index] !== undefined && row[index] !== null) ? row[index] : '';
+                        let val = (row[index] !== undefined && row[index] !== null) ? row[index] : '';
+
+                        // Format Date objects to be clean (removes timezone clutter)
+                        if (val instanceof Date && !isNaN(val.getTime())) {
+                            const hours = val.getHours();
+                            const minutes = val.getMinutes();
+                            const seconds = val.getSeconds();
+                            
+                            const yyyy = val.getFullYear();
+                            const mm = String(val.getMonth() + 1).padStart(2, '0');
+                            const dd = String(val.getDate()).padStart(2, '0');
+                            const dateStr = `${dd}-${mm}-${yyyy}`;
+                            
+                            // If time is exactly midnight, show only date. Otherwise show both date and time.
+                            if (hours === 0 && minutes === 0 && seconds === 0) {
+                                val = dateStr;
+                            } else {
+                                const hh = String(hours).padStart(2, '0');
+                                const min = String(minutes).padStart(2, '0');
+                                const sec = String(seconds).padStart(2, '0');
+                                val = `${dateStr} ${hh}:${min}:${sec}`;
+                            }
+                        } else if (typeof val === 'string' && val.includes('00:00:00 GMT')) {
+                            // Safety fallback: if for some reason the value is already a string with timezone info
+                            const parsedDate = new Date(val);
+                            if (!isNaN(parsedDate.getTime())) {
+                                const yyyy = parsedDate.getFullYear();
+                                const mm = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                                const dd = String(parsedDate.getDate()).padStart(2, '0');
+                                val = `${dd}-${mm}-${yyyy}`;
+                            }
+                        }
+
+                        record[key] = val;
                     });
                     
                     searchResults.push({
