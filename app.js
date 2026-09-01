@@ -805,8 +805,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td><strong>${u.username}</strong></td>
                         <td>${u.contactNumber || '-'}</td>
                         <td>
-                            <button type="button" class="btn-table-action btn-reset-pass" data-username="${u.username}">Reset Password</button>
-                            <button type="button" class="btn-table-action delete btn-del-user" data-username="${u.username}">Delete</button>
+                            <button type="button" class="btn-table-action btn-reset-pass" data-username="${u.username}" onclick="window.openResetPasswordModal('${u.username}')">Reset Password</button>
+                            <button type="button" class="btn-table-action delete btn-del-user" data-username="${u.username}" onclick="window.openDeleteUserModal('${u.username}')">Delete</button>
                         </td>
                     `;
                     userTableBody.appendChild(tr);
@@ -817,26 +817,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (userTableBody) {
-        userTableBody.addEventListener('click', (evt) => {
-            const btnReset = evt.target.closest('.btn-reset-pass');
-            if (btnReset) {
-                resetTargetUserId = btnReset.getAttribute('data-username');
-                if (resetTargetUsername) resetTargetUsername.textContent = resetTargetUserId;
-                resetAdminResetUserModalForm();
-                if (adminResetUserModal) adminResetUserModal.style.display = 'flex';
-                return;
-            }
-
-            const btnDel = evt.target.closest('.btn-del-user');
-            if (btnDel) {
-                const userName = btnDel.getAttribute('data-username');
-                if (confirm(`Are you sure you want to delete user "${userName}"?`)) {
-                    deleteUser(userName);
-                }
-            }
-        });
+    function resetAdminResetUserModalForm() {
+        if (adminVerifyPass) { adminVerifyPass.value = ''; adminVerifyPass.type = 'password'; }
+        if (resetUserNewPass) { resetUserNewPass.value = ''; resetUserNewPass.type = 'password'; }
+        if (resetUserConfirmPass) { resetUserConfirmPass.value = ''; resetUserConfirmPass.type = 'password'; }
+        resetEyeIcons(['adminVerifyPass', 'resetUserNewPass', 'resetUserConfirmPass']);
     }
+
+    function openResetPasswordModal(username) {
+        resetTargetUserId = username;
+        if (resetTargetUsername) resetTargetUsername.textContent = username;
+        resetAdminResetUserModalForm();
+        if (adminResetUserModal) {
+            adminResetUserModal.style.display = 'flex';
+        }
+    }
+
+    window.openResetPasswordModal = openResetPasswordModal;
+
+    window.openDeleteUserModal = function(username) {
+        if (confirm(`Are you sure you want to delete user "${username}"?`)) {
+            deleteUser(username);
+        }
+    };
+
+    document.addEventListener('click', (evt) => {
+        const btnReset = evt.target.closest('.btn-reset-pass');
+        if (btnReset) {
+            const uname = btnReset.getAttribute('data-username');
+            if (uname) {
+                openResetPasswordModal(uname);
+            }
+        }
+    });
 
     function resetAdminResetUserModalForm() {
         if (adminVerifyPass) { adminVerifyPass.value = ''; adminVerifyPass.type = 'password'; }
