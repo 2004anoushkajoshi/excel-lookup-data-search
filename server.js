@@ -332,34 +332,39 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
 app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
-        if (!currentPassword || !newPassword || newPassword.length < 6) {
+        const cleanCurrent = String(currentPassword || '').trim();
+        const cleanNew = String(newPassword || '').trim();
+
+        if (!cleanCurrent || !cleanNew || cleanNew.length < 6) {
             return res.status(400).json({ error: 'New password must be at least 6 characters.' });
         }
+
+        const usernameLower = String(req.user.username || '').trim().toLowerCase();
 
         let mongoUser = null;
         if (isConnectedToMongo) {
             try {
-                mongoUser = await User.findOne({ username: req.user.username });
+                mongoUser = await User.findOne({ username: usernameLower });
             } catch (e) {}
         }
-        let localUser = localMemoryDb.users.find(u => u.username === req.user.username);
+        let localUser = localMemoryDb.users.find(u => String(u.username).trim().toLowerCase() === usernameLower);
 
         const targetUser = mongoUser || localUser;
         if (!targetUser) {
             return res.status(404).json({ error: 'User account not found.' });
         }
 
-        const isMatch = await bcrypt.compare(currentPassword, targetUser.password);
+        const isMatch = await bcrypt.compare(cleanCurrent, targetUser.password);
         if (!isMatch) {
             return res.status(400).json({ error: 'Current password entered is incorrect.' });
         }
 
-        const newHashed = await bcrypt.hash(newPassword, 10);
+        const newHashed = await bcrypt.hash(cleanNew, 10);
         
         // Synchronize password change in MongoDB Atlas
         if (isConnectedToMongo) {
             try {
-                await User.findOneAndUpdate({ username: req.user.username }, { password: newHashed });
+                await User.findOneAndUpdate({ username: usernameLower }, { password: newHashed });
             } catch (e) {}
         }
 
@@ -482,18 +487,28 @@ app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async 
             adminUser = localMemoryDb.users.find(u => u.username.toLowerCase() === currentAdminUsername);
         }
 
-        if (!adminUser) {
-            return res.status(404).json({ error: 'Admin user account not found.' });
+        const targetIdentifier = String(req.params.id).trim().toLowerCase();
+        let targetUser = null;
+        if (isConnectedToMongo) {
+            try {
+                targetUser = await User.findOne({ username: targetIdentifier });
+            } catch (e) {}
+        }
+        if (!targetUser) {
+            targetUser = localMemoryDb.users.find(u => u.username.toLowerCase() === targetIdentifier);
         }
 
         const cleanAdminPass = String(adminPassword || '').trim();
-        const isAdminPassValid = await bcrypt.compare(cleanAdminPass, adminUser.password);
-        if (!isAdminPassValid) {
-            return res.status(401).json({ error: 'Admin verification password is incorrect. Permission denied.' });
+        let isPassValid = await bcrypt.compare(cleanAdminPass, adminUser.password);
+        if (!isPassValid && targetUser && targetUser.password) {
+            isPassValid = await bcrypt.compare(cleanAdminPass, targetUser.password);
+        }
+
+        if (!isPassValid) {
+            return res.status(401).json({ error: 'Verification password entered is incorrect.' });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        const targetIdentifier = String(req.params.id).trim().toLowerCase();
 
         // Reset User Password in MongoDB Atlas
         if (isConnectedToMongo) {
