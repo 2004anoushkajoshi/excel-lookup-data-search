@@ -464,91 +464,68 @@ app.post('/api/admin/users', authenticateToken, requireAdmin, async (req, res) =
     }
 });
 
-// 6. RESET USER PASSWORD (Admin Only - Requires Admin Verification Password)
+// 6. RESET USER PASSWORD (Admin Only - Requires Admin Password Verification)
 app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { adminPassword, newPassword } = req.body;
-        if (!adminPassword) {
+        const targetUsername = String(req.params.id || '').trim().toLowerCase();
+        const cleanAdminPass = String(adminPassword || '').trim();
+        const cleanNewPass = String(newPassword || '').trim();
+
+        if (!cleanAdminPass) {
             return res.status(400).json({ error: 'Admin verification password is required.' });
         }
-        if (!newPassword || newPassword.length < 6) {
-            return res.status(400).json({ error: 'New user password must be at least 6 characters.' });
+        if (!cleanNewPass || cleanNewPass.length < 6) {
+            return res.status(400).json({ error: 'New password must be at least 6 characters.' });
         }
 
-        // Verify Admin Password using username
+        // 1. Fetch logged-in Admin from DB / Local
+        const adminUsername = String(req.user.username || 'admin').trim().toLowerCase();
         let adminUser = null;
-        const currentAdminUsername = String(req.user.username || '').trim().toLowerCase();
         if (isConnectedToMongo) {
-            try {
-                adminUser = await User.findOne({ username: currentAdminUsername });
-            } catch (e) {}
+            try { adminUser = await User.findOne({ username: adminUsername }); } catch (e) {}
         }
         if (!adminUser) {
-            adminUser = localMemoryDb.users.find(u => u.username.toLowerCase() === currentAdminUsername);
+            adminUser = localMemoryDb.users.find(u => String(u.username).trim().toLowerCase() === adminUsername);
         }
 
-        const targetIdentifier = String(req.params.id).trim().toLowerCase();
-        let targetUser = null;
+        if (!adminUser) {
+            return res.status(404).json({ error: 'Admin account not found.' });
+        }
+
+        // 2. Verify Admin Password
+        const isAdminPassValid = await bcrypt.compare(cleanAdminPass, adminUser.password);
+        if (!isAdminPassValid) {
+            return res.status(401).json({ error: 'Incorrect Admin verification password.' });
+        }
+
+        // 3. Hash New Password
+        const hashedPassword = await bcrypt.hash(cleanNewPass, 10);
+
+        // 4. Update in MongoDB Atlas
         if (isConnectedToMongo) {
             try {
-                targetUser = await User.findOne({ username: targetIdentifier });
-            } catch (e) {}
-        }
-        if (!targetUser) {
-            targetUser = localMemoryDb.users.find(u => u.username.toLowerCase() === targetIdentifier);
-        }
-
-        const cleanAdminPass = String(adminPassword || '').trim();
-        let isPassValid = await bcrypt.compare(cleanAdminPass, adminUser.password);
-        if (!isPassValid && targetUser && targetUser.password) {
-            isPassValid = await bcrypt.compare(cleanAdminPass, targetUser.password);
-        }
-
-        if (!isPassValid) {
-            return res.status(401).json({ error: 'Verification password entered is incorrect.' });
-        }
-
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        // Reset User Password in MongoDB Atlas
-        if (isConnectedToMongo) {
-            try {
-                let updatedDoc = null;
-                if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-                    updatedDoc = await User.findByIdAndUpdate(req.params.id, { password: hashedPassword });
-                }
-                if (!updatedDoc) {
-                    updatedDoc = await User.findOneAndUpdate(
-                        { username: targetIdentifier },
-                        { password: hashedPassword }
-                    );
-                }
-                // If user was created prior to Atlas connection, create in Atlas now
-                if (!updatedDoc) {
-                    await User.create({
-                        username: targetIdentifier,
-                        password: hashedPassword,
-                        role: 'user'
-                    });
-                }
+                await User.updateOne(
+                    { username: targetUsername },
+                    { $set: { password: hashedPassword, role: 'user' } },
+                    { upsert: true }
+                );
             } catch (e) {
-                console.error('Mongo user password update error:', e);
+                console.error('Mongo reset password update error:', e);
             }
         }
 
-        // Reset User Password in Local Store
-        const localUser = localMemoryDb.users.find(u => 
-            (u._id || u.id) == req.params.id || u.username.toLowerCase() === targetIdentifier
-        );
+        // 5. Update in Local Storage
+        const localUser = localMemoryDb.users.find(u => String(u.username).trim().toLowerCase() === targetUsername);
         if (localUser) {
             localUser.password = hashedPassword;
             saveLocalDb();
         }
 
-        res.json({ message: 'User password reset successfully after Admin verification.' });
+        return res.json({ message: `Password for "${targetUsername}" updated successfully!` });
     } catch (err) {
         console.error('Reset user password error:', err);
-        res.status(500).json({ error: 'Failed to reset user password.' });
+        return res.status(500).json({ error: 'Failed to reset user password.' });
     }
 });
 

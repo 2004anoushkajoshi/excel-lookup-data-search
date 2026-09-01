@@ -863,7 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeToken = authToken || sessionStorage.getItem('glancex_jwt_token');
 
         try {
-            const res = await fetch(`/api/admin/users/${resetTargetUserId}/password`, {
+            const res = await fetch(`/api/admin/users/${encodeURIComponent(resetTargetUserId)}/password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -881,10 +881,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            showToast(`Password for user updated successfully!`);
-            logPrivacyEvent(`Admin verified password and reset user password.`, 'SECURITY');
+            showToast(data.message || `Password for user "${resetTargetUserId}" updated successfully!`);
+            logPrivacyEvent(`Admin reset password for user "${resetTargetUserId}".`, 'SECURITY');
             adminResetUserModal.style.display = 'none';
             resetAdminResetUserModalForm();
+            loadUserDirectory();
         } catch (err) {
             showToast('Error resetting user password.', 'error');
         }
