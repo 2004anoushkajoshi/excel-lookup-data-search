@@ -161,10 +161,10 @@ async function connectDB() {
         return;
     }
     try {
-        mongoose.set('bufferCommands', false);
-        const connectPromise = mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 2000 });
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Atlas SRV timeout')), 2000));
-        await Promise.race([connectPromise, timeoutPromise]);
+        await mongoose.connect(MONGODB_URI, { 
+            serverSelectionTimeoutMS: 15000,
+            connectTimeoutMS: 15000
+        });
         isConnectedToMongo = true;
         console.log('✅ Successfully connected to MongoDB Atlas database!');
         await seedDefaultAdmin();
