@@ -805,34 +805,37 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td><strong>${u.username}</strong></td>
                         <td>${u.contactNumber || '-'}</td>
                         <td>
-                            <button class="btn-table-action btn-reset-pass" data-username="${u.username}">Reset Password</button>
-                            <button class="btn-table-action delete btn-del-user" data-username="${u.username}">Delete</button>
+                            <button type="button" class="btn-table-action btn-reset-pass" data-username="${u.username}">Reset Password</button>
+                            <button type="button" class="btn-table-action delete btn-del-user" data-username="${u.username}">Delete</button>
                         </td>
                     `;
                     userTableBody.appendChild(tr);
-                });
-
-                userTableBody.querySelectorAll('.btn-reset-pass').forEach(btn => {
-                    btn.addEventListener('click', (evt) => {
-                        resetTargetUserId = evt.currentTarget.getAttribute('data-username');
-                        resetTargetUsername.textContent = resetTargetUserId;
-                        resetAdminResetUserModalForm();
-                        adminResetUserModal.style.display = 'flex';
-                    });
-                });
-
-                userTableBody.querySelectorAll('.btn-del-user').forEach(btn => {
-                    btn.addEventListener('click', (evt) => {
-                        const userName = evt.currentTarget.getAttribute('data-username');
-                        if (confirm(`Are you sure you want to delete user "${userName}"?`)) {
-                            deleteUser(userName);
-                        }
-                    });
                 });
             }
         } catch (err) {
             userTableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--error);">Error loading directory.</td></tr>`;
         }
+    }
+
+    if (userTableBody) {
+        userTableBody.addEventListener('click', (evt) => {
+            const btnReset = evt.target.closest('.btn-reset-pass');
+            if (btnReset) {
+                resetTargetUserId = btnReset.getAttribute('data-username');
+                if (resetTargetUsername) resetTargetUsername.textContent = resetTargetUserId;
+                resetAdminResetUserModalForm();
+                if (adminResetUserModal) adminResetUserModal.style.display = 'flex';
+                return;
+            }
+
+            const btnDel = evt.target.closest('.btn-del-user');
+            if (btnDel) {
+                const userName = btnDel.getAttribute('data-username');
+                if (confirm(`Are you sure you want to delete user "${userName}"?`)) {
+                    deleteUser(userName);
+                }
+            }
+        });
     }
 
     function resetAdminResetUserModalForm() {
