@@ -472,20 +472,22 @@ app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async 
 
         // Verify Admin Password using username
         let adminUser = null;
+        const currentAdminUsername = String(req.user.username || '').trim().toLowerCase();
         if (isConnectedToMongo) {
             try {
-                adminUser = await User.findOne({ username: req.user.username });
+                adminUser = await User.findOne({ username: currentAdminUsername });
             } catch (e) {}
         }
         if (!adminUser) {
-            adminUser = localMemoryDb.users.find(u => u.username === req.user.username);
+            adminUser = localMemoryDb.users.find(u => u.username.toLowerCase() === currentAdminUsername);
         }
 
         if (!adminUser) {
             return res.status(404).json({ error: 'Admin user account not found.' });
         }
 
-        const isAdminPassValid = await bcrypt.compare(adminPassword, adminUser.password);
+        const cleanAdminPass = String(adminPassword || '').trim();
+        const isAdminPassValid = await bcrypt.compare(cleanAdminPass, adminUser.password);
         if (!isAdminPassValid) {
             return res.status(401).json({ error: 'Admin verification password is incorrect. Permission denied.' });
         }
@@ -501,10 +503,18 @@ app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async 
                     updatedDoc = await User.findByIdAndUpdate(req.params.id, { password: hashedPassword });
                 }
                 if (!updatedDoc) {
-                    await User.findOneAndUpdate(
+                    updatedDoc = await User.findOneAndUpdate(
                         { username: targetIdentifier },
                         { password: hashedPassword }
                     );
+                }
+                // If user was created prior to Atlas connection, create in Atlas now
+                if (!updatedDoc) {
+                    await User.create({
+                        username: targetIdentifier,
+                        password: hashedPassword,
+                        role: 'user'
+                    });
                 }
             } catch (e) {
                 console.error('Mongo user password update error:', e);
