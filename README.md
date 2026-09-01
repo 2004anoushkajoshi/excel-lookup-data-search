@@ -1,29 +1,44 @@
-# GlanceX - Privacy-First directory search engine for Local Excel/CSV sheets
+# GlanceX - Zero-Transmission Directory Engine & Shared Sheet System
 
-👉 **Live Site**: **[https://2004anoushkajoshi.github.io/excel-lookup-data-search/](https://2004anoushkajoshi.github.io/excel-lookup-data-search/)**
+👉 **Live Application Link**: **[https://glancex.onrender.com/](https://glancex.onrender.com/)**
 
-A sleek, 100% client-side web application to look up contact information inside large Excel or CSV directory files. 
+A powerful, privacy-first web application to look up contact information inside large Excel and CSV directory files, supporting both **Independent Local Sandbox Mode** and **Centralized Shared Directory Mode**.
 
 **Created by**: Anoushka Joshi (anoushka.joshi2004@gmail.com)
 
 ---
 
-## 🔒 Privacy & Security Model
+## 🔒 Security & Privacy Architecture
 
-This application is designed with a strict **zero-trust, offline-first** architecture:
-* **100% In-Browser Execution**: Excel files are parsed and searched locally in your browser's transient memory (`ArrayBuffer`). No data is ever uploaded to a database or sent to a server.
-* **Verified Offline Capability**: Since the SheetJS parsing engine is bundled locally in the repository (`lib/xlsx.full.min.js`), the tool can run completely offline. You can load the site, disconnect your internet connection, and perform searches normally.
-* **Privacy Shield Monitor**: Built-in visual sandbox console logs and blocks outbound network requests (`fetch`/`XMLHttpRequest`) to verify no outbound data leaks occur.
-* **Transient Storage**: As soon as you refresh or close the tab, all cached Excel records are permanently wiped from your browser memory.
+GlanceX is built on a strict **zero-trust, dual-mode** architecture:
+
+* **Independent Mode (100% In-Browser Execution)**:
+  - Excel files are parsed and searched locally in browser memory (`ArrayBuffer` & Web Workers). 
+  - **Zero Data Transmission**: No search queries or file bytes ever leave your device.
+* **Dependent Mode (Centralized Shared Sheets)**:
+  - **AES-256-GCM Military-Grade Encryption**: Admin shared directory files are encrypted at rest before storing in MongoDB Atlas.
+  - **JWT Authentication & Role Control**: Multi-user directory permissions with Admin control panel.
+  - **Auto Expiry & Purge**: Scheduled file visibility expiration rules.
+* **Active Privacy Shield Network Monitor**:
+  - Hooks `window.fetch` and `XMLHttpRequest` in real-time to monitor outgoing payloads.
+  - Intercepts, logs, and blocks any unauthorized byte leaks live in the UI.
 
 ---
 
 ## 🚀 Key Features
 
-* **Instant Search**: Normalizes and matches phone numbers regardless of formatting (strips spaces, dashes, parentheses, or country codes to ensure correct matches).
-* **Multi-Column Search**: Searches across all columns simultaneously to find your query.
-* **Web Worker Engine**: Runs parsing and matching in a background thread, preventing browser freeze even when handling files with **100,000+ records**.
-* **One-Click Clipboard Export**: Easily copy matched details to your clipboard with a single click.
+* **Visual 4-Stage Upload Progress Bar**: Real-time percentage tracking for file byte uploading, AES-256 encryption, and Web Worker row indexing.
+* **Smart Phone Lookup**: Flexibly matches numbers of any length (7 to 15+ digits), automatically handling country codes, spaces, dashes, and formatting.
+* **Web Worker Engine**: Runs parsing and matching in a background thread, preventing browser freeze even when handling **900,000+ records**.
+* **De-Cluttered Modern UI**: Sleek glassmorphism interface with inline file controls, rotating red cross reset actions, and horizontal feature ribbons.
+
+---
+
+## 🌐 Live Deployment & Continuous Integration
+
+This repository branch (`v2-enhanced-version`) is connected to **Render Cloud Hosting**:
+* **Live Site**: [https://glancex.onrender.com/](https://glancex.onrender.com/)
+* **Continuous Deployment**: Every commit pushed to `v2-enhanced-version` automatically builds and updates the live website.
 
 ---
 
@@ -31,13 +46,11 @@ This application is designed with a strict **zero-trust, offline-first** archite
 
 You can run this application locally on your machine:
 
-### Option 1: Python HTTP Server
-Open your terminal in the repository folder and run:
 ```bash
-python -m http.server 8080
+# 1. Install dependencies
+npm install
+
+# 2. Start GlanceX Server
+node server.js
 ```
 Then open your browser to **[http://localhost:8080](http://localhost:8080)**.
-
-### Option 2: VS Code Live Server Extension
-1. Install the **Live Server** extension (by Ritwick Dey) in VS Code.
-2. Right-click `index.html` and select **Open with Live Server**.
