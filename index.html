@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlanceX - Privacy-First Local Excel Search & Phone Lookup</title>
-    <meta name="description" content="GlanceX: A 100% client-side, zero-database local tool to search details by phone number in Excel sheets. Your data stays entirely in your browser with zero network requests.">
-    <meta name="keywords" content="data fetch, excel data fetch, excel phone number search, find phone number in excel, search phone number in excel sheet, how to search contact in excel, find data by phone number in excel, excel mobile number details, excel data searcher, excel directory search, local excel search bar, fetch details from phone number excel, offline excel search tool, find name by phone number, search customer details in excel, excel search without database, private excel data searcher, client-side excel parser, xlsx phone lookup offline, local csv directory search, GlanceX, Glance X, Anoushka Joshi, anoushka.joshi2004@gmail.com">
+    <title>GlanceX - Professional Excel Directory & Shared Sheet Search Engine</title>
+    <meta name="description" content="GlanceX directory search engine with Independent local mode and Dependent centralized shared sheet mode with role-based access, password management, file expiry, and offline search.">
+    <meta name="keywords" content="excel data fetch, excel phone lookup, directory search, mongodb auth, shared excel sheet, offline search">
     <meta name="author" content="Anoushka Joshi">
     <meta name="robots" content="index, follow">
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://2004anoushkajoshi.github.io/excel-lookup-data-search/">
-    <meta property="og:title" content="GlanceX - Privacy-First Local Excel Search">
-    <meta property="og:description" content="Search and fetch details by phone number in large Excel/CSV sheets locally. 100% private, client-side, and offline-capable.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,7 +18,7 @@
         <header>
             <div class="logo-section">
                 <h1>
-                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="9" y1="3" x2="9" y2="21"></line>
                         <line x1="15" y1="3" x2="15" y2="21"></line>
@@ -32,19 +27,60 @@
                     </svg>
                     GlanceX
                 </h1>
-                <p>Private Client-Side Excel Phone Lookup &bull; <strong>No internet connection required after loading</strong></p>
+                <p>Zero-Transmission Directory Engine &bull; <strong>Local Sandbox & Shared Sheet Modes</strong></p>
+            </div>
+
+            <!-- Mode Switcher Tabs -->
+            <div class="mode-switcher-container">
+                <button class="mode-btn active" id="btnModeIndependent" title="Upload and search any Excel/CSV file locally without logging in">
+                    <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    Independent Mode
+                </button>
+                <button class="mode-btn" id="btnModeDependent" title="Centralized shared sheet directory with Admin/User access & cloud database sync">
+                    <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Dependent Mode
+                </button>
             </div>
             
-            <div class="privacy-badge-container">
-                <div class="privacy-badge">
-                    <span class="dot"></span>
-                    Local Sandbox Active
+            <div class="header-right-actions">
+                <!-- User Account Profile Chip (Shown when logged in) -->
+                <div class="user-account-chip" id="userAccountChip" style="display: none;">
+                    <div class="chip-avatar" id="chipAvatar">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="chip-info">
+                        <span class="chip-name" id="chipUsername">User</span>
+                        <span class="chip-role" id="chipRole">Role</span>
+                    </div>
+                    <button class="btn-chip-logout" id="btnHeaderLogout" title="Log Out">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
                 </div>
+
+                <div class="privacy-badge" id="privacyBadge">
+                    <span class="dot"></span>
+                    <span id="badgeText">Local Sandbox Active</span>
+                </div>
+                
                 <button class="network-monitor-btn" id="monitorBtn">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
-                    Network Log
+                    Privacy Shield Log
                 </button>
             </div>
         </header>
@@ -56,85 +92,438 @@
                     <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--success)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
-                    Privacy Shield Network Monitor
+                    Privacy Shield Network Monitor (Current Session)
                 </h3>
-                <span style="font-size: 0.75rem; color: var(--text-dark);">Active Interceptor Hook</span>
+                <span style="font-size: 0.75rem; color: var(--text-dark);">Isolated Session Logs</span>
             </div>
             
             <div class="monitor-stats">
                 <div class="stat-card">
-                    <span class="label">Data Sent to Internet</span>
-                    <span class="value secure" id="dataSentVal">0 Bytes</span>
+                    <span class="label">Search Query Network Leak</span>
+                    <span class="value secure" id="dataSentVal">0 Bytes (In-Browser Search)</span>
                 </div>
                 <div class="stat-card">
-                    <span class="label">Security Policy</span>
-                    <span class="value secure" id="securityAuditText">Checking...</span>
+                    <span class="label">Security & Privacy Audit</span>
+                    <span class="value secure" id="securityAuditText">100% In-Browser Privacy</span>
                 </div>
                 <div class="stat-card">
                     <span class="label">Compute Context</span>
-                    <span class="value" style="color: var(--accent);">Web Worker Thread</span>
+                    <span class="value" style="color: var(--accent);" id="computeEngineText">Web Worker Thread</span>
                 </div>
             </div>
 
             <div class="network-log" id="networkLog">
-                <!-- Dynamically populated privacy events logs -->
+                <!-- Dynamically populated privacy events logs for current tab session -->
             </div>
         </div>
 
-        <!-- Main Dashboard Grid -->
-        <div class="dashboard-grid">
+        <!-- DEPENDENT MODE LOGIN CARD (Shown when Dependent Mode selected & not logged in) -->
+        <div class="glass-panel login-card" id="loginCard" style="display: none;">
+            <div class="login-header">
+                <div class="login-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <h2>Centralized Mode Authentication</h2>
+                <p>Log in with your Admin or User account to access shared directory sheets.</p>
+            </div>
             
-            <!-- Left Sidebar Controls -->
-            <div class="sidebar-panel">
-                
-                <!-- File Upload Box -->
-                <div class="glass-panel upload-container">
-                    <h3 class="upload-title">1. Upload Directory File</h3>
-                    
-                    <!-- Drag & Drop Area -->
-                    <div class="drop-zone" id="dropZone">
-                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <form id="loginForm" class="login-form">
+                <div class="settings-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" class="custom-input" placeholder="e.g. admin or username" required autocomplete="username">
+                </div>
+                <div class="settings-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="loginPassword" class="custom-input" placeholder="Enter password" required autocomplete="current-password">
+                        <button type="button" class="btn-toggle-pass" data-target="loginPassword" title="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary-large" id="btnLoginSubmit">
+                    Log In to Access Shared Directory
+                </button>
+            </form>
+        </div>
+
+        <!-- ADMIN NAVIGATION TABS BAR (Shown when Admin logged in) -->
+        <div class="glass-panel admin-tabs-bar" id="adminTabsBar" style="display: none;">
+            <div class="admin-tab-nav-wrapper">
+                <div class="admin-tab-nav">
+                    <button class="admin-tab-btn active" data-tab="tab-search">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Shared Directory Search
+                    </button>
+                    <button class="admin-tab-btn" data-tab="tab-upload">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
-                        <div class="drop-zone-text">
+                        Upload & Expiry Control
+                    </button>
+                    <button class="admin-tab-btn" data-tab="tab-users">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        User Management
+                    </button>
+                    <button class="admin-tab-btn" data-tab="tab-security">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Security Settings
+                    </button>
+                </div>
+                <button class="btn-admin-nav-logout" id="btnAdminNavLogout" title="Log Out">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- ADMIN TAB CONTENT CONTAINERS -->
+        
+        <!-- Admin Tab 1: Shared Directory Search Workspace -->
+        <div class="admin-tab-content active" id="tab-search" style="display: none;">
+            <!-- Rendered in Dashboard Grid below -->
+        </div>
+
+        <!-- Admin Tab 2: Upload & Expiry Control -->
+        <div class="admin-tab-content" id="tab-upload" style="display: none;">
+            <div class="admin-grid-2col">
+                <div class="glass-panel admin-card">
+                    <h4>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Upload Shared Excel / CSV File
+                    </h4>
+                    <form id="adminUploadForm">
+                        <div class="drop-zone" id="adminDropZone">
+                            <button type="button" class="btn-remove-file-inline" id="btnRemoveAdminFile" title="Remove selected file" style="display: none;">&times;</button>
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" id="adminDropZoneIcon">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <div class="drop-zone-text" id="adminDropZoneTitle">
+                                Click or drag file to upload shared sheet
+                            </div>
+                            <div class="drop-zone-subtext" id="adminDropZoneSubtext">Supports .xlsx, .xls, .csv</div>
+                        </div>
+                        <input type="file" id="adminFileInput" accept=".xlsx, .xls, .csv" style="display: none;">
+                        <div class="file-name-preview" id="adminFilePreview" style="display: none;"></div>
+
+                        <!-- Visual Upload Progress Bar Container (Admin Dependent Mode) -->
+                        <div class="upload-progress-wrapper" id="adminProgressWrapper" style="display: none; margin-top: 0.75rem;">
+                            <div class="progress-info-row">
+                                <span class="progress-status-text" id="adminProgressStatus">Uploading shared sheet...</span>
+                                <span class="progress-percent-val" id="adminProgressPercent">0%</span>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" id="adminProgressBarFill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group" style="margin-top: 1rem;">
+                            <label for="expirySelect">Set Visibility / Expiration Duration</label>
+                            <select id="expirySelect" class="custom-select">
+                                <option value="today">Just Today (Expires 11:59 PM Tonight)</option>
+                                <option value="1_day">1 Day (24 Hours)</option>
+                                <option value="3_days" selected>3 Days</option>
+                                <option value="7_days">7 Days (1 Week)</option>
+                                <option value="30_days">30 Days (1 Month)</option>
+                                <option value="custom">Custom Date & Time</option>
+                                <option value="never">No Expiry (Perpetual)</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-group" id="customDateGroup" style="display: none; margin-top: 0.5rem;">
+                            <label for="customExpiryDate">Select Expiry Date & Time</label>
+                            <input type="datetime-local" id="customExpiryDate" class="custom-input">
+                        </div>
+
+                        <button type="submit" class="btn-primary-large" id="btnAdminUploadSubmit" style="margin-top: 1rem;" disabled>
+                            Publish Shared Sheet to All Users
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-panel admin-card">
+                    <h4>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--warning)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Active Shared Sheet Status
+                    </h4>
+                    <div id="activeFileStatusBox" class="active-file-status-box">
+                        <p style="color: var(--text-dark);">No active shared sheet on server.</p>
+                    </div>
+                    <button class="btn-danger-outline" id="btnAdminClearSheet" style="margin-top: 1rem; display: none;">
+                        Purge / Remove Active Shared Sheet
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tab 3: User Management -->
+        <div class="admin-tab-content" id="tab-users" style="display: none;">
+            <div class="admin-grid-2col">
+                <div class="glass-panel admin-card">
+                    <h4>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="17" y1="11" x2="23" y2="11"></line>
+                        </svg>
+                        Create New User Account
+                    </h4>
+                    <form id="createUserForm">
+                        <div class="settings-group">
+                            <label for="newUsername">Username *</label>
+                            <input type="text" id="newUsername" class="custom-input" placeholder="e.g. rahul_sales" required autocomplete="off">
+                        </div>
+                        <div class="settings-group">
+                            <label for="newPassword">Password * (Min 6 chars)</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" id="newPassword" class="custom-input" placeholder="Set user password" required autocomplete="off">
+                                <button type="button" class="btn-toggle-pass" data-target="newPassword">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <label for="newContact">Contact Number</label>
+                            <input type="text" id="newContact" class="custom-input" placeholder="e.g. 9876543210" autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn-primary-large" style="margin-top: 1rem;">
+                            Create Normal User Account
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-panel admin-card">
+                    <h4>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Registered Users Directory
+                    </h4>
+                    <div class="user-table-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <tr><td colspan="3" style="text-align: center; color: var(--text-dark);">Loading user directory...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tab 4: Security Settings -->
+        <div class="admin-tab-content" id="tab-security" style="display: none;">
+            <div class="glass-panel admin-card" style="max-width: 480px; margin: 0 auto;">
+                <h4>
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Change Admin Password
+                </h4>
+                <form id="adminChangePassForm" autocomplete="off">
+                    <div class="settings-group">
+                        <label for="adminCurrentPass">Current Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="adminCurrentPass" class="custom-input" placeholder="Enter current password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="adminCurrentPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label for="adminNewPass">New Password (Min 6 chars)</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="adminNewPass" class="custom-input" placeholder="Enter new password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="adminNewPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label for="adminConfirmPass">Confirm New Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="adminConfirmPass" class="custom-input" placeholder="Confirm new password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="adminConfirmPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary-large" style="margin-top: 1rem;">
+                        Update Admin Password
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- NORMAL USER INFO BAR (Shown when Logged in as Regular User) -->
+        <div class="glass-panel user-info-bar" id="userInfoBar" style="display: none;">
+            <div class="user-profile-summary">
+                <div class="user-avatar-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <div class="user-name-title">
+                        <span id="loggedNormalUsername">User</span> 
+                        <span class="role-badge user">Normal User</span>
+                    </div>
+                    <div class="user-subtext" id="loggedNormalContact">Contact: -</div>
+                </div>
+            </div>
+            <div class="user-bar-actions">
+                <button class="btn-secondary" id="btnUserChangePassModal">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Change Password
+                </button>
+                <button class="btn-secondary" id="btnUserLogout">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN DASHBOARD GRID (Search & Results Workspace) -->
+        <div class="dashboard-grid" id="mainDashboardGrid">
+            
+            <!-- Left Sidebar Controls -->
+            <div class="sidebar-panel">
+                
+                <!-- Independent Upload Box (Only shown in Independent Mode) -->
+                <div class="glass-panel upload-container" id="independentUploadPanel">
+                    <h3 class="upload-title">1. Upload Local Directory File</h3>
+                    
+                    <div class="drop-zone" id="dropZone">
+                        <button class="btn-remove-file-inline" id="btnRemoveIndepFile" title="Remove file" style="display: none;">&times;</button>
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" id="dropZoneIcon">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <div class="drop-zone-text" id="dropZoneTitle">
                             <strong>Drag & drop file</strong> or click to browse
                         </div>
-                        <div class="drop-zone-subtext">Supports .xlsx, .xls, .csv</div>
+                        <div class="drop-zone-subtext" id="dropZoneSubtext">Supports .xlsx, .xls, .csv</div>
                     </div>
                     <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" style="display: none;">
 
-                    <!-- Loaded File Details Box -->
-                    <div class="file-info-box" id="fileInfoBox">
-                        <div class="file-icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
+                    <!-- Visual Upload Progress Bar Container (Independent Mode) -->
+                    <div class="upload-progress-wrapper" id="indepProgressWrapper" style="display: none; margin-top: 0.75rem;">
+                        <div class="progress-info-row">
+                            <span class="progress-status-text" id="indepProgressStatus">Reading file...</span>
+                            <span class="progress-percent-val" id="indepProgressPercent">0%</span>
                         </div>
-                        <div class="file-details">
-                            <div class="file-name" id="fileName">directory.xlsx</div>
-                            <div class="file-meta" id="fileMeta">Loading rows...</div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" id="indepProgressBarFill" style="width: 0%;"></div>
                         </div>
-                        <button class="btn-remove-file" id="btnRemoveFile" title="Clear and purge file data">
-                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
                     </div>
 
-                    <!-- Worksheet Select (only visible when file loaded) -->
                     <div style="display: none; flex-direction: column; gap: 1rem; margin-top: 0.5rem;" id="settingsPanel">
                         <div class="settings-group">
                             <label for="sheetSelect">Select Worksheet</label>
-                            <select id="sheetSelect" class="custom-select">
-                                <!-- Populated dynamically -->
-                            </select>
+                            <select id="sheetSelect" class="custom-select"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dependent Mode Shared File Status Box (Shown for Logged in Users / Admin in Dependent Mode) -->
+                <div class="glass-panel upload-container" id="dependentFileStatusPanel" style="display: none;">
+                    <h3 class="upload-title">1. Active Shared Directory</h3>
+                    <div class="dependent-file-info" id="dependentFileInfo">
+                        <div class="file-icon-svg">
+                            <svg viewBox="0 0 24 24" width="22" height="22" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-name" id="depFileName">Loading shared file...</div>
+                            <div class="file-meta" id="depFileMeta">Connecting to server...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-badge-pill warning" id="depExpiryBadge" style="margin-top: 0.75rem;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Checking expiration status...
+                    </div>
+                    
+                    <div class="status-badge-pill success" id="offlineCacheBadge" style="margin-top: 0.5rem;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        Offline Search Ready (Cached)
+                    </div>
+
+                    <div style="display: none; flex-direction: column; gap: 1rem; margin-top: 0.5rem;" id="depSettingsPanel">
+                        <div class="settings-group">
+                            <label for="depSheetSelect">Select Worksheet</label>
+                            <select id="depSheetSelect" class="custom-select"></select>
                         </div>
                     </div>
                 </div>
@@ -144,8 +533,8 @@
                     <h3 class="upload-title">2. Lookup Details</h3>
                     <form class="search-form" id="searchForm">
                         <div class="settings-group">
-                            <label for="phoneInput">Enter Phone Number</label>
-                            <input type="text" id="phoneInput" placeholder="e.g. 9876543210" class="custom-input" disabled required autocomplete="off">
+                            <label for="phoneInput">Enter Search Number (Min 7 Digits)</label>
+                            <input type="text" id="phoneInput" placeholder="Enter 7+ digit number (e.g. 9876543210)" class="custom-input" disabled required autocomplete="off">
                         </div>
                         
                         <button type="submit" class="btn-search" id="btnSearch" disabled>
@@ -170,19 +559,24 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                         <path d="M9 11l2 2 4-4"></path>
                     </svg>
-                    <h3>Zero-Data Transmission Sandbox</h3>
-                    <p>Upload any large Excel directory. Data parsing, caching, and searching happen 100% locally in your browser memory. <strong>No internet connection is required once the page is loaded.</strong> Closing this tab deletes the cache completely.</p>
+                    <h3>Zero-Transmission Directory Engine</h3>
+                    <p id="emptyStateDescription">
+                        Upload any Excel directory in Independent Mode, or log in under Dependent Mode to access shared sheets.
+                    </p>
+
+                    <div class="empty-state-bullets">
+                        <span>AES-256 Cloud Encryption</span>
+                        <span>Zero Query Transmission</span>
+                        <span>Offline Wi-Fi Ready</span>
+                    </div>
                 </div>
 
-                <!-- Results Loaded State Header -->
+                <!-- Results Header -->
                 <div class="results-header" id="resultsHeader">
                     <h2>
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                         Lookup Results
                     </h2>
@@ -190,12 +584,184 @@
                 </div>
 
                 <!-- Results Grid -->
-                <div class="results-grid" id="resultsGrid">
-                    <!-- Populated dynamically with result cards -->
+                <div class="results-grid" id="resultsGrid"></div>
+
+        </div>
+
+        <!-- BOTTOM HORIZONTAL FEATURE STRIP / RIBBON -->
+        <div class="glass-panel app-footer-strip">
+            <div class="footer-strip-item">
+                <span class="footer-strip-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </span>
+                <div class="footer-strip-text">
+                    <strong>AES-256 Cloud Encryption</strong>
+                    <small>MongoDB files encrypted at rest (Dependent Mode)</small>
                 </div>
-
             </div>
+            <div class="footer-strip-item">
+                <span class="footer-strip-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </span>
+                <div class="footer-strip-text">
+                    <strong>Zero-Data Transmission</strong>
+                    <small>No search queries leave your device</small>
+                </div>
+            </div>
+            <div class="footer-strip-item">
+                <span class="footer-strip-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--warning)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </span>
+                <div class="footer-strip-text">
+                    <strong>Auto Expiry & Purge</strong>
+                    <small>Admin scheduled rules (Dependent Mode)</small>
+                </div>
+            </div>
+            <div class="footer-strip-item">
+                <span class="footer-strip-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--success)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                    </svg>
+                </span>
+                <div class="footer-strip-text">
+                    <strong>Offline Resilience</strong>
+                    <small>Search continuously without Wi-Fi</small>
+                </div>
+            </div>
+        </div>
 
+        <!-- Normal User Change Password Modal -->
+        <div class="modal-overlay" id="userPassModal" style="display: none;">
+            <div class="glass-panel modal-card">
+                <div class="modal-header">
+                    <h3>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Change Password
+                    </h3>
+                    <button class="btn-close-modal" id="btnCloseUserPassModal">&times;</button>
+                </div>
+                <form id="userChangePassForm" style="margin-top: 1rem;" autocomplete="off">
+                    <div class="settings-group">
+                        <label for="userCurrentPass">Current Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="userCurrentPass" class="custom-input" placeholder="Enter current password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="userCurrentPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label for="userNewPass">New Password (Min 6 chars)</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="userNewPass" class="custom-input" placeholder="Enter new password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="userNewPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label for="userConfirmPass">Confirm New Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="userConfirmPass" class="custom-input" placeholder="Confirm new password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="userConfirmPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+                        <button type="button" class="btn-secondary" id="btnCancelUserPassModal">Cancel</button>
+                        <button type="submit" class="btn-primary-large" style="width: auto; padding: 0.6rem 1.5rem;">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Admin Reset User Password Modal (Requires Admin Password Verification) -->
+        <div class="modal-overlay" id="adminResetUserModal" style="display: none;">
+            <div class="glass-panel modal-card">
+                <div class="modal-header">
+                    <h3>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Reset User Password
+                    </h3>
+                    <button class="btn-close-modal" id="btnCloseAdminResetModal">&times;</button>
+                </div>
+                <form id="adminResetUserForm" style="margin-top: 1rem;" autocomplete="off">
+                    <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.82rem; margin-bottom: 1rem; color: var(--text-main);">
+                        Resetting password for: <strong id="resetTargetUsername" style="color: var(--accent);">user</strong>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="adminVerifyPass">Admin Password *</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="adminVerifyPass" class="custom-input" placeholder="Enter Admin password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="adminVerifyPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="resetUserNewPass">New User Password *</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="resetUserNewPass" class="custom-input" placeholder="Enter new user password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="resetUserNewPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="resetUserConfirmPass">Confirm New Password *</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="resetUserConfirmPass" class="custom-input" placeholder="Confirm new user password" required autocomplete="new-password" value="">
+                            <button type="button" class="btn-toggle-pass" data-target="resetUserConfirmPass">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+                        <button type="button" class="btn-secondary" id="btnCancelAdminResetModal">Cancel</button>
+                        <button type="submit" class="btn-primary-large" style="width: auto; padding: 0.6rem 1.5rem;">Verify & Reset Password</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Copy Toast Notification -->
@@ -208,7 +774,7 @@
 
         <!-- Footer -->
         <footer>
-            <div style="margin-bottom: 0.5rem; opacity: 0.7;">Processed 100% Client-Side. Privacy Shield Enforced. No data is stored, cached, or transmitted over any network.</div>
+            <div style="margin-bottom: 0.5rem; opacity: 0.7;">Processed In-Browser. MongoDB Atlas & JWT Security Enabled. Expiry & Offline Caching Supported.</div>
             <div style="font-size: 0.85rem; font-weight: 500; opacity: 0.9; color: var(--text-main);">
                 by Anoushka Joshi (<a href="mailto:anoushka.joshi2004@gmail.com" style="color: var(--primary); text-decoration: none;">anoushka.joshi2004@gmail.com</a>)
             </div>
