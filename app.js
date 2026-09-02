@@ -287,8 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (e) {}
         }
 
-        const urlStr = String(url);
-
+        const urlStr = String(url);        
         if (currentMode === 'independent') {
             if (urlStr.includes('/api/')) {
                 dataSentVal.textContent = `${bodySize} Bytes (LEAK DETECTED & BLOCKED)`;
@@ -297,10 +296,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Independent Mode: Network requests blocked to enforce zero-leak privacy.');
             }
         } else {
+            // Dependent Mode Safety Interceptor: Block any attempt to transmit search queries over network
+            if (urlStr.includes('/search') || (options && options.body && String(options.body).includes('phoneInput'))) {
+                dataSentVal.textContent = `${bodySize} Bytes (SEARCH LEAK BLOCKED)`;
+                dataSentVal.style.color = '#f87171';
+                logPrivacyEvent(`ALERT: Unauthorized search query network transmission attempt to "${urlStr}". Intercepted & Blocked!`, 'ALERT');
+                throw new Error('Dependent Mode: Search queries are strictly 100% in-browser RAM only.');
+            }
+
             if (bodySize > 0) {
                 totalSearchQueryBytesSent += bodySize;
                 dataSentVal.textContent = `Search: 0 Bytes (TLS Auth/Sync: ${totalSearchQueryBytesSent.toLocaleString()} B)`;
-                logPrivacyEvent(`HTTPS Encrypted Auth/Sync payload sent to ${urlStr}: ${bodySize} bytes (0 Search Query Data Sent).`, 'SYSTEM');
+                logPrivacyEvent(`HTTPS Encrypted Auth/Sync payload sent to ${urlStr}: ${bodySize} bytes (0 Search Query Bytes Sent).`, 'SYSTEM');
             }
         }
 
