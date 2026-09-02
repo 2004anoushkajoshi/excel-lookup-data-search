@@ -192,6 +192,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializePrivacyShield();
 
+    // --- STRONG PASSWORD VALIDATOR & METER ---
+    function validatePasswordStrength(password) {
+        const p = String(password || '');
+        const hasLength = p.length >= 8;
+        const hasUpper = /[A-Z]/.test(p);
+        const hasLower = /[a-z]/.test(p);
+        const hasNumber = /[0-9]/.test(p);
+        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p);
+        
+        let score = 0;
+        if (hasLength) score++;
+        if (hasUpper) score++;
+        if (hasLower) score++;
+        if (hasNumber) score++;
+        if (hasSpecial) score++;
+        
+        const isValid = hasLength && hasUpper && hasLower && hasNumber && hasSpecial;
+        return { hasLength, hasUpper, hasLower, hasNumber, hasSpecial, score, isValid };
+    }
+
+    function attachPasswordStrengthMeter(inputId) {
+        const input = document.getElementById(inputId);
+        const fill = document.getElementById(`strength-fill-${inputId}`);
+        const text = document.getElementById(`strength-text-${inputId}`);
+        const checklist = document.getElementById(`strength-checklist-${inputId}`);
+        if (!input || !fill || !text || !checklist) return;
+
+        input.addEventListener('input', () => {
+            const val = input.value;
+            if (!val) {
+                fill.style.width = '0%';
+                fill.style.backgroundColor = '#94a3b8';
+                text.className = 'strength-label weak';
+                text.textContent = 'Requires 8+ chars';
+                checklist.querySelectorAll('.strength-check-item').forEach(item => {
+                    item.className = 'strength-check-item invalid';
+                });
+                return;
+            }
+
+            const res = validatePasswordStrength(val);
+            const percent = Math.min(100, Math.max(15, (res.score / 5) * 100));
+            fill.style.width = `${percent}%`;
+
+            const itemLength = checklist.querySelector('[data-rule="length"]');
+            const itemUpper = checklist.querySelector('[data-rule="upper"]');
+            const itemNumber = checklist.querySelector('[data-rule="number"]');
+            const itemSpecial = checklist.querySelector('[data-rule="special"]');
+
+            if (itemLength) itemLength.className = `strength-check-item ${res.hasLength ? 'valid' : 'invalid'}`;
+            if (itemUpper) itemUpper.className = `strength-check-item ${res.hasUpper ? 'valid' : 'invalid'}`;
+            if (itemNumber) itemNumber.className = `strength-check-item ${res.hasNumber ? 'valid' : 'invalid'}`;
+            if (itemSpecial) itemSpecial.className = `strength-check-item ${res.hasSpecial ? 'valid' : 'invalid'}`;
+
+            if (res.isValid) {
+                fill.style.backgroundColor = '#a855f7';
+                text.className = 'strength-label enterprise';
+                text.textContent = 'Enterprise Strong ✅';
+            } else if (res.score >= 4) {
+                fill.style.backgroundColor = '#10b981';
+                text.className = 'strength-label strong';
+                text.textContent = 'Strong';
+            } else if (res.score >= 2) {
+                fill.style.backgroundColor = '#f59e0b';
+                text.className = 'strength-label medium';
+                text.textContent = 'Medium';
+            } else {
+                fill.style.backgroundColor = '#ef4444';
+                text.className = 'strength-label weak';
+                text.textContent = 'Weak';
+            }
+        });
+    }
+
+    attachPasswordStrengthMeter('newPassword');
+    attachPasswordStrengthMeter('adminNewPass');
+    attachPasswordStrengthMeter('userNewPass');
+    attachPasswordStrengthMeter('resetUserNewPass');
+
     // --- ACTIVE REAL-TIME NETWORK TRAFFIC INTERCEPTOR ---
     let totalSearchQueryBytesSent = 0;
     const originalFetch = window.fetch;
@@ -220,8 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (bodySize > 0) {
                 totalSearchQueryBytesSent += bodySize;
-                dataSentVal.textContent = `${totalSearchQueryBytesSent.toLocaleString()} Bytes (Auth & Sync)`;
-                logPrivacyEvent(`Network payload sent to ${urlStr}: ${bodySize} bytes over SSL/TLS.`, 'SYSTEM');
+                dataSentVal.textContent = `Search: 0 Bytes (TLS Auth/Sync: ${totalSearchQueryBytesSent.toLocaleString()} B)`;
+                logPrivacyEvent(`HTTPS Encrypted Auth/Sync payload sent to ${urlStr}: ${bodySize} bytes (0 Search Query Data Sent).`, 'SYSTEM');
             }
         }
 
@@ -757,6 +836,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const passwordVal = newPassword.value.trim();
         const contactVal = newContact.value.trim();
 
+        const passCheck = validatePasswordStrength(passwordVal);
+        if (!passCheck.isValid) {
+            showToast('Password must be 8+ chars with Uppercase, Lowercase, Number, & Special Symbol (!@#$).', 'error');
+            return;
+        }
+
         try {
             const res = await fetch('/api/admin/users', {
                 method: 'POST',
@@ -876,6 +961,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const passCheck = validatePasswordStrength(resetUserNewPass.value);
+        if (!passCheck.isValid) {
+            showToast('Password must be 8+ chars with Uppercase, Lowercase, Number, & Special Symbol (!@#$).', 'error');
+            return;
+        }
+
         const activeToken = authToken || sessionStorage.getItem('glancex_jwt_token');
 
         try {
@@ -928,6 +1019,12 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (adminNewPass.value !== adminConfirmPass.value) {
             showToast('New passwords do not match.', 'error');
+            return;
+        }
+
+        const passCheck = validatePasswordStrength(adminNewPass.value);
+        if (!passCheck.isValid) {
+            showToast('Password must be 8+ chars with Uppercase, Lowercase, Number, & Special Symbol (!@#$).', 'error');
             return;
         }
 
@@ -997,6 +1094,12 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (userNewPass.value !== userConfirmPass.value) {
             showToast('New passwords do not match.', 'error');
+            return;
+        }
+
+        const passCheck = validatePasswordStrength(userNewPass.value);
+        if (!passCheck.isValid) {
+            showToast('Password must be 8+ chars with Uppercase, Lowercase, Number, & Special Symbol (!@#$).', 'error');
             return;
         }
 

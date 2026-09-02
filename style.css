@@ -1347,3 +1347,70 @@ footer a {
 footer a:hover {
     color: var(--primary);
 }
+
+/* Enterprise Password Strength Indicator */
+.password-strength-container {
+    margin-top: 0.45rem;
+    padding: 0.5rem 0.65rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.strength-meter-bar {
+    height: 4px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+}
+
+.strength-meter-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 2px;
+}
+
+.strength-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.strength-label {
+    font-weight: 600;
+}
+
+.strength-label.weak { color: #ef4444; }
+.strength-label.medium { color: #f59e0b; }
+.strength-label.strong { color: #10b981; }
+.strength-label.enterprise { color: #a855f7; }
+
+.strength-checklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 0.5rem;
+    margin-top: 0.35rem;
+    font-size: 0.68rem;
+    color: var(--text-dark);
+}
+
+.strength-check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.2s ease;
+}
+
+.strength-check-item.valid {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.strength-check-item.invalid {
+    color: #94a3b8;
+}

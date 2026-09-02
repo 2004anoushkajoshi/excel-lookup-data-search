@@ -328,6 +328,17 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
     }
 });
 
+// Helper: Enforce Enterprise Strong Password Standards
+function isStrongPassword(password) {
+    const p = String(password || '').trim();
+    if (p.length < 8) return false;
+    if (!/[A-Z]/.test(p)) return false;
+    if (!/[a-z]/.test(p)) return false;
+    if (!/[0-9]/.test(p)) return false;
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p)) return false;
+    return true;
+}
+
 // 3. CHANGE PASSWORD (Admin & Normal Users)
 app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
     try {
@@ -335,8 +346,12 @@ app.post('/api/auth/change-password', authenticateToken, async (req, res) => {
         const cleanCurrent = String(currentPassword || '').trim();
         const cleanNew = String(newPassword || '').trim();
 
-        if (!cleanCurrent || !cleanNew || cleanNew.length < 6) {
-            return res.status(400).json({ error: 'New password must be at least 6 characters.' });
+        if (!cleanCurrent || !cleanNew) {
+            return res.status(400).json({ error: 'Current password and new password are required.' });
+        }
+
+        if (!isStrongPassword(cleanNew)) {
+            return res.status(400).json({ error: 'New password must be at least 8 characters and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special symbol (!@#$).' });
         }
 
         const usernameLower = String(req.user.username || '').trim().toLowerCase();
@@ -412,8 +427,12 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, async (req, res) =>
 app.post('/api/admin/users', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { username, password, contactNumber } = req.body;
-        if (!username || !password || password.length < 6) {
-            return res.status(400).json({ error: 'Username and password (min 6 chars) required.' });
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required.' });
+        }
+
+        if (!isStrongPassword(password)) {
+            return res.status(400).json({ error: 'User password must be at least 8 characters and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special symbol (!@#$).' });
         }
 
         const cleanUsername = String(username).trim().toLowerCase();
@@ -475,8 +494,8 @@ app.put('/api/admin/users/:id/password', authenticateToken, requireAdmin, async 
         if (!cleanAdminPass) {
             return res.status(400).json({ error: 'Admin verification password is required.' });
         }
-        if (!cleanNewPass || cleanNewPass.length < 6) {
-            return res.status(400).json({ error: 'New password must be at least 6 characters.' });
+        if (!cleanNewPass || !isStrongPassword(cleanNewPass)) {
+            return res.status(400).json({ error: 'New user password must be at least 8 characters and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special symbol (!@#$).' });
         }
 
         // 1. Fetch logged-in Admin from DB / Local

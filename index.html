@@ -307,15 +307,28 @@
                             <input type="text" id="newUsername" class="custom-input" placeholder="e.g. rahul_sales" required autocomplete="off">
                         </div>
                         <div class="settings-group">
-                            <label for="newPassword">Password * (Min 6 chars)</label>
+                            <label for="newPassword">Password * (Min 8 chars: A-Z, a-z, 0-9, !@#$)</label>
                             <div class="password-input-wrapper">
-                                <input type="password" id="newPassword" class="custom-input" placeholder="Set user password" required autocomplete="off">
+                                <input type="password" id="newPassword" class="custom-input" placeholder="Set strong user password" required autocomplete="off">
                                 <button type="button" class="btn-toggle-pass" data-target="newPassword">
                                     <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
                                     </svg>
                                 </button>
+                            </div>
+                            <div class="password-strength-container" id="strength-container-newPassword">
+                                <div class="strength-meter-bar"><div class="strength-meter-fill" id="strength-fill-newPassword"></div></div>
+                                <div class="strength-status-row">
+                                    <span>Password Security:</span>
+                                    <span class="strength-label weak" id="strength-text-newPassword">Requires 8+ chars</span>
+                                </div>
+                                <div class="strength-checklist" id="strength-checklist-newPassword">
+                                    <div class="strength-check-item invalid" data-rule="length"><span>•</span> 8+ Chars</div>
+                                    <div class="strength-check-item invalid" data-rule="upper"><span>•</span> Uppercase</div>
+                                    <div class="strength-check-item invalid" data-rule="number"><span>•</span> Number</div>
+                                    <div class="strength-check-item invalid" data-rule="special"><span>•</span> Special (!@#$)</div>
+                                </div>
                             </div>
                         </div>
                         <div class="settings-group">
@@ -380,15 +393,28 @@
                         </div>
                     </div>
                     <div class="settings-group">
-                        <label for="adminNewPass">New Password (Min 6 chars)</label>
+                        <label for="adminNewPass">New Password (Min 8 chars: A-Z, a-z, 0-9, !@#$)</label>
                         <div class="password-input-wrapper">
-                            <input type="password" id="adminNewPass" class="custom-input" placeholder="Enter new password" required autocomplete="new-password" value="">
+                            <input type="password" id="adminNewPass" class="custom-input" placeholder="Enter new strong password" required autocomplete="new-password" value="">
                             <button type="button" class="btn-toggle-pass" data-target="adminNewPass">
                                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
                             </button>
+                        </div>
+                        <div class="password-strength-container" id="strength-container-adminNewPass">
+                            <div class="strength-meter-bar"><div class="strength-meter-fill" id="strength-fill-adminNewPass"></div></div>
+                            <div class="strength-status-row">
+                                <span>Password Security:</span>
+                                <span class="strength-label weak" id="strength-text-adminNewPass">Requires 8+ chars</span>
+                            </div>
+                            <div class="strength-checklist" id="strength-checklist-adminNewPass">
+                                <div class="strength-check-item invalid" data-rule="length"><span>•</span> 8+ Chars</div>
+                                <div class="strength-check-item invalid" data-rule="upper"><span>•</span> Uppercase</div>
+                                <div class="strength-check-item invalid" data-rule="number"><span>•</span> Number</div>
+                                <div class="strength-check-item invalid" data-rule="special"><span>•</span> Special (!@#$)</div>
+                            </div>
                         </div>
                     </div>
                     <div class="settings-group">
@@ -686,15 +712,28 @@
                     </div>
                 </div>
                 <div class="settings-group">
-                    <label for="userNewPass">New Password (Min 6 chars)</label>
+                    <label for="userNewPass">New Password (Min 8 chars: A-Z, a-z, 0-9, !@#$)</label>
                     <div class="password-input-wrapper">
-                        <input type="password" id="userNewPass" class="custom-input" placeholder="Enter new password" required autocomplete="new-password" value="">
+                        <input type="password" id="userNewPass" class="custom-input" placeholder="Enter new strong password" required autocomplete="new-password" value="">
                         <button type="button" class="btn-toggle-pass" data-target="userNewPass">
                             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
                         </button>
+                    </div>
+                    <div class="password-strength-container" id="strength-container-userNewPass">
+                        <div class="strength-meter-bar"><div class="strength-meter-fill" id="strength-fill-userNewPass"></div></div>
+                        <div class="strength-status-row">
+                            <span>Password Security:</span>
+                            <span class="strength-label weak" id="strength-text-userNewPass">Requires 8+ chars</span>
+                        </div>
+                        <div class="strength-checklist" id="strength-checklist-userNewPass">
+                            <div class="strength-check-item invalid" data-rule="length"><span>•</span> 8+ Chars</div>
+                            <div class="strength-check-item invalid" data-rule="upper"><span>•</span> Uppercase</div>
+                            <div class="strength-check-item invalid" data-rule="number"><span>•</span> Number</div>
+                            <div class="strength-check-item invalid" data-rule="special"><span>•</span> Special (!@#$)</div>
+                        </div>
                     </div>
                 </div>
                 <div class="settings-group">
@@ -749,15 +788,28 @@
                 </div>
 
                 <div class="settings-group" style="margin-bottom: 1rem;">
-                    <label for="resetUserNewPass" style="font-size: 0.82rem; font-weight: 600; color: #e2e8f0;">Step 2: New Password for User * (Min 6 chars)</label>
+                    <label for="resetUserNewPass" style="font-size: 0.82rem; font-weight: 600; color: #e2e8f0;">Step 2: New Password for User * (Min 8 chars: A-Z, a-z, 0-9, !@#$)</label>
                     <div class="password-input-wrapper">
-                        <input type="password" id="resetUserNewPass" class="custom-input" placeholder="Enter new password for this user" required autocomplete="new-password" value="">
+                        <input type="password" id="resetUserNewPass" class="custom-input" placeholder="Enter new strong password" required autocomplete="new-password" value="">
                         <button type="button" class="btn-toggle-pass" data-target="resetUserNewPass">
                             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
                         </button>
+                    </div>
+                    <div class="password-strength-container" id="strength-container-resetUserNewPass">
+                        <div class="strength-meter-bar"><div class="strength-meter-fill" id="strength-fill-resetUserNewPass"></div></div>
+                        <div class="strength-status-row">
+                            <span>Password Security:</span>
+                            <span class="strength-label weak" id="strength-text-resetUserNewPass">Requires 8+ chars</span>
+                        </div>
+                        <div class="strength-checklist" id="strength-checklist-resetUserNewPass">
+                            <div class="strength-check-item invalid" data-rule="length"><span>•</span> 8+ Chars</div>
+                            <div class="strength-check-item invalid" data-rule="upper"><span>•</span> Uppercase</div>
+                            <div class="strength-check-item invalid" data-rule="number"><span>•</span> Number</div>
+                            <div class="strength-check-item invalid" data-rule="special"><span>•</span> Special (!@#$)</div>
+                        </div>
                     </div>
                 </div>
 
